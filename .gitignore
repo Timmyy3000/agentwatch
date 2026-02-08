@@ -39,3 +39,5 @@ yarn-error.log*
 
 
 .agent
+# Codex local tooling
+.claude/
