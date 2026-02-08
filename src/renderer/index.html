@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentWatch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="widget-container" id="widgetContainer">
+            <div class="compact-controls">
+                <span class="update-timer-compact" id="updateTimerCompact" style="display: none;">⟳ 5:00</span>
+                <div class="compact-controls-buttons">
+                    <button class="control-btn settings-btn" id="compactSettingsBtn" title="Settings">⚙️</button>
+                    <button class="control-btn minimize-btn" id="compactMinimizeBtn" title="Minimize">−</button>
+                    <button class="control-btn close-btn" id="compactCloseBtn" title="Exit">×</button>
+                </div>
+            </div>
+
+            <div class="title-bar" id="titleBar">
+                <div class="title">
+                    <img src="../../assets/icon.png" alt="Logo" class="app-logo">
+                    <span>AgentWatch</span>
+                </div>
+                <div class="controls">
+                    <button class="control-btn settings-btn" id="settingsBtn" title="Settings">⚙️</button>
+                    <button class="control-btn refresh-btn" id="refreshBtn" title="Refresh">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6M1 20v-6h6" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
+                    </button>
+                    <button class="control-btn minimize-btn" id="minimizeBtn" title="Minimise to System Tray">−</button>
+                    <button class="control-btn close-btn" id="closeBtn" title="Exit Application">×</button>
+                </div>
+            </div>
+
+            <div class="loading-container" id="loadingContainer">
+                <div class="spinner"></div>
+                <p>Loading usage data...</p>
+            </div>
+
+            <div class="login-container" id="loginContainer" style="display: none;">
+                <div class="login-content">
+                    <div class="login-step1" id="loginStep1">
+                        <div class="step-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                <polyline points="10 17 15 12 10 7" />
+                                <line x1="15" y1="12" x2="3" y2="12" />
+                            </svg>
+                        </div>
+                        <div class="step-text">
+                            <h3>Connect Claude</h3>
+                            <p>Log in to claude.ai for Claude limits</p>
+                            <p class="step-hint">Codex can be connected from Settings using auto-login or manual cookie entry.</p>
+                            <p class="step-error" id="autoDetectError"></p>
+                        </div>
+                        <button class="auto-detect-btn" id="autoDetectBtn">Log in</button>
+                        <button class="next-step-btn" id="nextStepBtn">Manual →</button>
+                    </div>
+
+                    <div class="login-step2" id="loginStep2" style="display: none;">
+                        <div class="session-key-form">
+                            <div class="session-key-header">
+                                <h3>Paste Claude Session Key</h3>
+                                <p>
+                                    <a href="#" id="openBrowserLink" class="open-browser-link">Open claude.ai</a>
+                                    → <code>F12</code> → Application → Cookies → <code>sessionKey</code>
+                                </p>
+                            </div>
+                            <div class="session-key-input-row">
+                                <input type="password" id="sessionKeyInput" placeholder="sk-ant-sid01-..." spellcheck="false" autocomplete="off">
+                                <button class="connect-btn" id="connectBtn">Connect</button>
+                            </div>
+                            <div class="session-key-footer">
+                                <p class="session-key-error" id="sessionKeyError"></p>
+                                <button class="back-step-btn" id="backStepBtn">← Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="next-step-btn" id="openSettingsForCodexBtn">Connect Codex in Settings</button>
+                </div>
+            </div>
+
+            <div class="no-usage-container" id="noUsageContainer" style="display: none;">
+                <div class="no-usage-content">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <div class="no-usage-text-group">
+                        <h3>No Usage Yet</h3>
+                        <p>Connect Claude/Codex and start using them to see stats</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content" id="mainContent" style="display: none;">
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <span class="provider-name">Claude</span>
+                        <span class="provider-status" id="claudeStatus">Disconnected</span>
+                    </div>
+
+                    <div class="usage-section">
+                        <span class="usage-label">Current Session</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="claudeSessionProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="usage-percentage" id="claudeSessionPercentage">0%</span>
+                        <div class="timer-container">
+                            <div class="timer-text" id="claudeSessionTimeText">--:--</div>
+                            <svg class="mini-timer" width="24" height="24" viewBox="0 0 24 24">
+                                <circle class="timer-bg" cx="12" cy="12" r="10" />
+                                <circle class="timer-progress" id="claudeSessionTimer" cx="12" cy="12" r="10" style="stroke-dasharray: 63; stroke-dashoffset: 63" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="usage-section">
+                        <span class="usage-label">Weekly Limit</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill weekly" id="claudeWeeklyProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="usage-percentage" id="claudeWeeklyPercentage">0%</span>
+                        <div class="timer-container">
+                            <div class="timer-text" id="claudeWeeklyTimeText">--:--</div>
+                            <svg class="mini-timer" width="24" height="24" viewBox="0 0 24 24">
+                                <circle class="timer-bg" cx="12" cy="12" r="10" />
+                                <circle class="timer-progress weekly" id="claudeWeeklyTimer" cx="12" cy="12" r="10" style="stroke-dasharray: 63; stroke-dashoffset: 63" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="expand-toggle" id="expandToggle">
+                        <svg class="expand-arrow" id="expandArrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </div>
+
+                    <div class="expand-section" id="expandSection" style="display: none;">
+                        <div id="extraRows"></div>
+                    </div>
+                </div>
+
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <span class="provider-name">Codex</span>
+                        <span class="provider-status" id="codexStatus">Disconnected</span>
+                    </div>
+
+                    <div class="usage-section">
+                        <span class="usage-label">Current Session</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill codex" id="codexSessionProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="usage-percentage" id="codexSessionPercentage">--</span>
+                        <div class="timer-container">
+                            <div class="timer-text" id="codexSessionTimeText">--:--</div>
+                            <svg class="mini-timer" width="24" height="24" viewBox="0 0 24 24">
+                                <circle class="timer-bg" cx="12" cy="12" r="10" />
+                                <circle class="timer-progress codex" id="codexSessionTimer" cx="12" cy="12" r="10" style="stroke-dasharray: 63; stroke-dashoffset: 63" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="usage-section">
+                        <span class="usage-label">Weekly Limit</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill codex-weekly" id="codexWeeklyProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="usage-percentage" id="codexWeeklyPercentage">--</span>
+                        <div class="timer-container">
+                            <div class="timer-text" id="codexWeeklyTimeText">--:--</div>
+                            <svg class="mini-timer" width="24" height="24" viewBox="0 0 24 24">
+                                <circle class="timer-bg" cx="12" cy="12" r="10" />
+                                <circle class="timer-progress codex-weekly" id="codexWeeklyTimer" cx="12" cy="12" r="10" style="stroke-dasharray: 63; stroke-dashoffset: 63" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="provider-hint" id="codexHint">Connect Codex in Settings to see usage.</div>
+                </div>
+
+                <div class="update-timer-normal" id="updateTimerNormal" style="display: none;">
+                    <span class="update-timer-icon">⟳</span>
+                    <span class="update-timer-text" id="updateTimerText">Next update in 5:00</span>
+                </div>
+            </div>
+
+            <div class="settings-overlay" id="settingsOverlay" style="display: none;">
+                <div class="settings-content">
+                    <button class="icon-close-settings-btn" id="closeSettingsBtn" title="Close">×</button>
+                    <p class="disclaimer">
+                        <strong>Disclaimer:</strong> Unofficial tool not affiliated with Anthropic or OpenAI. Use at your own discretion.
+                    </p>
+
+                    <div class="settings-option">
+                        <label class="toggle-label" for="compactModeToggle">
+                            <span>Compact Mode</span>
+                            <span class="toggle-description">Minimal UI with smaller window</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="compactModeToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-option">
+                        <label class="toggle-label" for="refreshIntervalSelect">
+                            <span>Refresh Interval</span>
+                            <span class="toggle-description">How often to update usage data</span>
+                        </label>
+                        <select id="refreshIntervalSelect" class="settings-select">
+                            <option value="60000">1 minute</option>
+                            <option value="180000">3 minutes</option>
+                            <option value="300000" selected>5 minutes</option>
+                            <option value="600000">10 minutes</option>
+                            <option value="900000">15 minutes</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-option">
+                        <label class="toggle-label" for="showUpdateTimerToggle">
+                            <span>Show Update Timer</span>
+                            <span class="toggle-description">Display countdown to next refresh</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showUpdateTimerToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-auth-block">
+                        <h4>Codex Authentication</h4>
+                        <p class="settings-auth-hint">Auto-detect opens ChatGPT login. Manual mode accepts a cookie pair.</p>
+                        <div class="settings-auth-actions">
+                            <button class="connect-btn" id="codexAutoDetectBtn">Auto Connect (Non-Google)</button>
+                            <button class="logout-btn" id="codexDisconnectBtn">Disconnect Codex</button>
+                        </div>
+                        <button class="next-step-btn" id="openCodexBrowserBtn">Open in Browser</button>
+                        <p class="settings-auth-hint">Paste full Cookie header and/or Bearer token from the working browser request for `/backend-api/wham/usage`.</p>
+                        <div class="settings-manual-auth">
+                            <textarea id="codexCookieHeaderInput" placeholder="Full Cookie header (optional): a=b; c=d; ..." spellcheck="false"></textarea>
+                            <input type="password" id="codexBearerTokenInput" placeholder="Authorization Bearer token (optional)" spellcheck="false" autocomplete="off">
+                            <input type="text" id="codexCookieNameInput" placeholder="Cookie name (e.g. __Secure-next-auth.session-token)" spellcheck="false" autocomplete="off">
+                            <input type="password" id="codexCookieValueInput" placeholder="Cookie value" spellcheck="false" autocomplete="off">
+                            <button class="connect-btn" id="codexManualConnectBtn">Manual Connect</button>
+                        </div>
+                        <div class="settings-auth-actions">
+                            <button class="next-step-btn" id="copyCodexLogsBtn">Copy Codex Logs</button>
+                            <button class="next-step-btn" id="clearCodexLogsBtn">Clear Logs</button>
+                        </div>
+                        <p class="session-key-error" id="codexAuthError"></p>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="logout-btn" id="logoutBtn">Disconnect Claude</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+{
+  "name": "agentwatch",
+  "version": "1.3.0",
+  "description": "Desktop widget for Claude and Codex usage monitoring",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:local": "electron-builder --dir --config.electronDist=node_modules/electron/dist --config.win.signAndEditExecutable=false",
+    "build:win": "electron-builder --win",
+    "dev": "cross-env NODE_ENV=development electron ."
+  },
+  "keywords": [
+    "agentwatch",
+    "claude",
+    "codex",
+    "usage",
+    "widget",
+    "electron"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "build": {
+    "appId": "com.agentwatch.app",
+    "productName": "AgentWatch",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "files": [
+      "**/*",
+      "!**/*.ts",
+      "!*.md"
+    ],
+    "asarUnpack": [
+      "node_modules/conf/**"
+    ]
+  }
+}

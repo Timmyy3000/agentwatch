@@ -1,0 +1,19 @@
+name: Question
+description: Ask a usage or setup question
+title: "[Question]: "
+labels:
+  - question
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What do you need help with?
+      placeholder: How do I connect Codex if Google login fails in-app?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What you tried and where you are blocked
