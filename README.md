@@ -5,6 +5,14 @@ AgentWatch is a Windows desktop widget for tracking both Claude and Codex usage 
 This project is a fork of the original Claude Usage Widget:
 `https://github.com/SlavomirDurej/claude-usage-widget`
 
+## Download for Windows (No Coding)
+
+1. Open the Releases page: `https://github.com/Timmyy3000/agentwatch/releases`
+2. Download the latest Windows asset (for now: `AgentWatch.exe`)
+3. Run `AgentWatch.exe`
+
+If Windows SmartScreen warns about an unsigned app, click `More info` -> `Run anyway`.
+
 ## What It Tracks
 
 - Claude current-session usage and weekly usage
