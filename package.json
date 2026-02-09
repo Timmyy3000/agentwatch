@@ -1,6 +1,6 @@
 {
   "name": "agentwatch",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Desktop widget for Claude and Codex usage monitoring",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "electron-builder",
     "build:local": "electron-builder --dir --config.electronDist=node_modules/electron/dist --config.win.signAndEditExecutable=false",
     "build:win": "electron-builder --win",
-    "build:win:setup": "electron-builder --win nsis",
+    "build:win:setup": "electron-builder --win nsis --publish never",
     "build:win:portable": "electron-builder --win portable",
     "dev": "cross-env NODE_ENV=development electron ."
   },
