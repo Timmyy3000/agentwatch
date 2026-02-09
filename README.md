@@ -8,8 +8,11 @@ This project is a fork of the original Claude Usage Widget:
 ## Download for Windows (No Coding)
 
 1. Open the Releases page: `https://github.com/Timmyy3000/agentwatch/releases`
-2. Download the latest Windows asset (for now: `AgentWatch.exe`)
-3. Run `AgentWatch.exe`
+2. Download the installer asset: `*Setup*.exe`
+3. Run the installer.
+
+Do not use `win-unpacked/AgentWatch.exe` by itself. That binary requires
+Electron runtime DLLs (including `ffmpeg.dll`) from the same folder.
 
 If Windows SmartScreen warns about an unsigned app, click `More info` -> `Run anyway`.
 
@@ -38,10 +41,16 @@ npm start
 ## Build Windows Executable
 
 ```bash
-npm run build:win
+npm run build:win:setup
 ```
 
 Build output goes to `dist/`.
+
+Optional portable build (for advanced/manual distribution):
+
+```bash
+npm run build:win:portable
+```
 
 App/product name is now `AgentWatch`, so generated artifacts should use that name.
 
